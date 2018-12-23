@@ -1,6 +1,7 @@
 package carbon;
 
 import android.animation.AnimatorInflater;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -437,6 +438,7 @@ public class Carbon {
         return (float) Math.sqrt(w * w + h * h);
     }
 
+    @SuppressLint("RestrictedApi")
     public static void setTint(Drawable drawable, int tint) {
         if (Carbon.IS_LOLLIPOP_OR_HIGHER) {
             drawable.setTint(tint);
@@ -447,6 +449,7 @@ public class Carbon {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     public static void setTintList(Drawable drawable, ColorStateList tint) {
         if (Carbon.IS_LOLLIPOP_OR_HIGHER) {
             drawable.setTintList(tint);
@@ -457,6 +460,7 @@ public class Carbon {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     public static void setTintMode(Drawable drawable, PorterDuff.Mode mode) {
         if (Carbon.IS_LOLLIPOP_OR_HIGHER) {
             drawable.setTintMode(mode);

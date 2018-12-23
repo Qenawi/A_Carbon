@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:app="http://schemas.android.com/apk/res-auto"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <carbon.widget.RelativeLayout
         android:id="@+id/carbon_inputLayoutContainer"
@@ -70,6 +71,7 @@
         <carbon.widget.TextView
             android:id="@+id/carbon_error"
             android:layout_width="0dp"
+            tools:text="Error Mesg"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textAppearance="?attr/carbon_textAppearanceCaption"
@@ -78,6 +80,7 @@
 
         <carbon.widget.TextView
             android:id="@+id/carbon_counter"
+            tools:text="carbon_Counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?attr/carbon_textAppearanceCaption"/>

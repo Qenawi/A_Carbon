@@ -5,7 +5,8 @@ import android.graphics.Typeface;
 
 import java.util.HashMap;
 
-public class TypefaceUtils {
+public class TypefaceUtils
+{
     private static HashMap<String, Typeface> pathCache = new HashMap<>();
     private static HashMap<String, Typeface>[] familyStyleCache = new HashMap[4];
 

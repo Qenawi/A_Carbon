@@ -35,6 +35,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -143,30 +144,34 @@ public class EditText extends android.widget.EditText
         initEditText(attrs, defStyleAttr);
     }
 
-    private static int[] rippleIds = new int[]{
-            R.styleable.EditText_carbon_rippleColor,
-            R.styleable.EditText_carbon_rippleStyle,
-            R.styleable.EditText_carbon_rippleHotspot,
-            R.styleable.EditText_carbon_rippleRadius
-    };
-    private static int[] animationIds = new int[]{
-            R.styleable.EditText_carbon_inAnimation,
-            R.styleable.EditText_carbon_outAnimation
-    };
-    private static int[] touchMarginIds = new int[]{
-            R.styleable.EditText_carbon_touchMargin,
-            R.styleable.EditText_carbon_touchMarginLeft,
-            R.styleable.EditText_carbon_touchMarginTop,
-            R.styleable.EditText_carbon_touchMarginRight,
-            R.styleable.EditText_carbon_touchMarginBottom
-    };
-    private static int[] tintIds = new int[]{
-            R.styleable.EditText_carbon_tint,
-            R.styleable.EditText_carbon_tintMode,
-            R.styleable.EditText_carbon_backgroundTint,
-            R.styleable.EditText_carbon_backgroundTintMode,
-            R.styleable.EditText_carbon_animateColorChanges
-    };
+    private static int[] rippleIds = new int[]
+            {
+                    R.styleable.EditText_carbon_rippleColor,
+                    R.styleable.EditText_carbon_rippleStyle,
+                    R.styleable.EditText_carbon_rippleHotspot,
+                    R.styleable.EditText_carbon_rippleRadius
+            };
+    private static int[] animationIds = new int[]
+            {
+                    R.styleable.EditText_carbon_inAnimation,
+                    R.styleable.EditText_carbon_outAnimation
+            };
+    private static int[] touchMarginIds = new int[]
+            {
+                    R.styleable.EditText_carbon_touchMargin,
+                    R.styleable.EditText_carbon_touchMarginLeft,
+                    R.styleable.EditText_carbon_touchMarginTop,
+                    R.styleable.EditText_carbon_touchMarginRight,
+                    R.styleable.EditText_carbon_touchMarginBottom
+            };
+    private static int[] tintIds = new int[]
+            {
+                    R.styleable.EditText_carbon_tint,
+                    R.styleable.EditText_carbon_tintMode,
+                    R.styleable.EditText_carbon_backgroundTint,
+                    R.styleable.EditText_carbon_backgroundTintMode,
+                    R.styleable.EditText_carbon_animateColorChanges
+            };
     private static int[] strokeIds = new int[]{
             R.styleable.EditText_carbon_stroke,
             R.styleable.EditText_carbon_strokeWidth
@@ -200,34 +205,50 @@ public class EditText extends android.widget.EditText
             R.styleable.EditText_carbon_autoSizeStepGranularity
     };
 
-    private void initEditText(AttributeSet attrs, int defStyleAttr) {
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.EditText, defStyleAttr, R.style.carbon_EditText);
+    /**
+     * inislize Carbon Edit Text ;(
+     * styleable-> custom Defined attr
+     * EditText_android_textAppearance-> Style  contain size and color ex...
+     * Font Family: A Collection of Related Fonts
+     * Font :The Specific Tool (or File) That Contains a Typeface
+     * TextPaint-> TextPaint is an extension of Paint that leaves room for some extra data used during text measuring and drawing.
+     *
+     * @param attrs
+     * @param defStyleAttr
+     */
+    private void initEditText(AttributeSet attrs, int defStyleAttr)
+    {
+        // Get AttributeSet if Any
+        TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.EditText, defStyleAttr, R.style.carbon_EditText);
 
-        int ap = a.getResourceId(R.styleable.EditText_android_textAppearance, -1);
+        int ap = attributes.getResourceId(R.styleable.EditText_android_textAppearance, -1);
         if (ap != -1)
-            setTextAppearanceInternal(ap, a.hasValue(R.styleable.EditText_android_textColor));
+            setTextAppearanceInternal(ap, attributes.hasValue(R.styleable.EditText_android_textColor));
 
-        int textStyle = a.getInt(R.styleable.EditText_android_textStyle, 0);
+        int textStyle = attributes.getInt(R.styleable.EditText_android_textStyle, 0);
         boolean bold = (textStyle & Typeface.BOLD) != 0;
         boolean italic = (textStyle & Typeface.ITALIC) != 0;
 
-        for (int i = 0; i < a.getIndexCount(); i++) {
-            int attr = a.getIndex(i);
+        for (int i = 0; i < attributes.getIndexCount(); i++) {
+            // Assign Custom Attr to View ;D
+            int attr = attributes.getIndex(i);
             if (!isInEditMode() && attr == R.styleable.EditText_carbon_fontPath) {
-                String path = a.getString(attr);
+                // > > > > it has Font Path Assigned ;)
+                String path = attributes.getString(attr);
                 Typeface typeface = TypefaceUtils.getTypeface(getContext(), path);
                 setTypeface(typeface);
             } else if (attr == R.styleable.EditText_carbon_fontFamily) {
-                Typeface typeface = TypefaceUtils.getTypeface(getContext(), a.getString(attr), textStyle);
+                // > > > Font Family -----------?!? >
+                Typeface typeface = TypefaceUtils.getTypeface(getContext(), attributes.getString(attr), textStyle);
                 setTypeface(typeface);
                 bold = false;
                 italic = false;
             } else if (attr == R.styleable.EditText_carbon_font) {
-                handleFontAttribute(a, textStyle, attr);
+                handleFontAttribute(attributes, textStyle, attr);
             } else if (attr == R.styleable.EditText_android_textAllCaps) {
-                setAllCaps(a.getBoolean(attr, true));
+                setAllCaps(attributes.getBoolean(attr, true));
             }
-        }
+        }// for
 
         TextPaint paint = getPaint();
         if (bold)
@@ -235,52 +256,49 @@ public class EditText extends android.widget.EditText
         if (italic)
             paint.setTextSkewX(-0.25f);
 
-        setCursorColor(a.getColor(R.styleable.EditText_carbon_cursorColor, 0));
+        //Set Edit Text Field Attr For Adv Customization  CursorColor,Pattern,MinChars,MaxChars,Required,Prefix,Suffix,MatchingView
+        setCursorColor(attributes.getColor(R.styleable.EditText_carbon_cursorColor, 0));
+        setPattern(attributes.getString(R.styleable.EditText_carbon_pattern));
+        setMinCharacters(attributes.getInt(R.styleable.EditText_carbon_minCharacters, 0));
+        setMaxCharacters(attributes.getInt(R.styleable.EditText_carbon_maxCharacters, Integer.MAX_VALUE));
+        setRequired(attributes.getBoolean(R.styleable.EditText_carbon_required, false));
+        setPrefix(attributes.getString(R.styleable.EditText_carbon_prefix));
+        setSuffix(attributes.getString(R.styleable.EditText_carbon_suffix));
+        setMatchingView(attributes.getResourceId(R.styleable.EditText_carbon_matchingView, 0));
 
-        setPattern(a.getString(R.styleable.EditText_carbon_pattern));
-        setMinCharacters(a.getInt(R.styleable.EditText_carbon_minCharacters, 0));
-        setMaxCharacters(a.getInt(R.styleable.EditText_carbon_maxCharacters, Integer.MAX_VALUE));
-        setRequired(a.getBoolean(R.styleable.EditText_carbon_required, false));
+        //Set Carbon Attrs Field Attr For Adv DefaultTextColor,RippleDrawable,Elevation,Tint,Anmiation,TouchMirgin,MaxSize,HTMLTXT,Stroke,CornerRadious
+        Carbon.initDefaultTextColor(this, attributes, R.styleable.EditText_android_textColor);
+        Carbon.initRippleDrawable(this, attributes, rippleIds);
+        Carbon.initElevation(this, attributes, elevationIds);
+        Carbon.initTint(this, attributes, tintIds);
+        Carbon.initAnimations(this, attributes, animationIds);
+        Carbon.initTouchMargin(this, attributes, touchMarginIds);
+        Carbon.initMaxSize(this, attributes, maxSizeIds);
+        Carbon.initHtmlText(this, attributes, R.styleable.EditText_carbon_htmlText);
+        Carbon.initStroke(this, attributes, strokeIds);
+        Carbon.initCornerCutRadius(this, attributes, cornerCutRadiusIds);
+        Carbon.initAutoSizeText(this, attributes, autoSizeTextIds);
 
-        setPrefix(a.getString(R.styleable.EditText_carbon_prefix));
-        setSuffix(a.getString(R.styleable.EditText_carbon_suffix));
-
-        setMatchingView(a.getResourceId(R.styleable.EditText_carbon_matchingView, 0));
-
-        Carbon.initDefaultTextColor(this, a, R.styleable.EditText_android_textColor);
-
-        Carbon.initRippleDrawable(this, a, rippleIds);
-        Carbon.initElevation(this, a, elevationIds);
-        Carbon.initTint(this, a, tintIds);
-        Carbon.initAnimations(this, a, animationIds);
-        Carbon.initTouchMargin(this, a, touchMarginIds);
-        Carbon.initMaxSize(this, a, maxSizeIds);
-        Carbon.initHtmlText(this, a, R.styleable.EditText_carbon_htmlText);
-        Carbon.initStroke(this, a, strokeIds);
-        Carbon.initCornerCutRadius(this, a, cornerCutRadiusIds);
-        Carbon.initAutoSizeText(this, a, autoSizeTextIds);
-
-        if (a.getResourceId(R.styleable.EditText_android_background, 0) == R.color.carbon_defaultColor) {
+        // if IT Contain BackGround USe IT
+        if (attributes.getResourceId(R.styleable.EditText_android_background, 0) == R.color.carbon_defaultColor) {
             float underlineWidth = getResources().getDimensionPixelSize(R.dimen.carbon_1dip);
             UnderlineDrawable underlineDrawable = new UnderlineDrawable();
             underlineDrawable.setThickness(underlineWidth);
             underlineDrawable.setPaddingBottom(getPaddingBottom() - getResources().getDimensionPixelSize(R.dimen.carbon_paddingHalf) + underlineWidth / 2);
             setBackgroundDrawable(underlineDrawable);
         }
-
-        a.recycle();
-
+        attributes.recycle();
         if (!isInEditMode())
             initSelectionHandle();
-
+        // Validate Listen To Text Change
         addTextChangedListener(new SimpleTextWatcher() {
+
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!skipValidate)
                     validateInternalEvent();
             }
         });
-
         setSelection(length());
     }
 
@@ -428,6 +446,9 @@ public class EditText extends android.widget.EditText
         this.required = required;
     }
 
+    /**
+     * Check if input text is Valid or not with each Character Update
+     */
     public void validate() {
         validateInternal();
         postInvalidate();
@@ -459,8 +480,10 @@ public class EditText extends android.widget.EditText
             }
         }
 
+        Log.v("MRQenawi", "Validating");
         valid = requiredOk && !drawMatchingViewError && drawPatternOk && !counterError;
-
+        // bt3ml Refresh LEL Drawable State 34n  T matCh State
+        //  bta3t EditText
         refreshDrawableState();
     }
 
@@ -573,7 +596,7 @@ public class EditText extends android.widget.EditText
         try {
             int resourceId = appearance.getResourceId(attributeId, 0);
             TypedValue mTypedValue = new TypedValue();
-            Typeface typeface = ResourcesCompat.getFont(getContext(), resourceId, mTypedValue, textStyle, replyCallback);
+            @SuppressLint("RestrictedApi") Typeface typeface = ResourcesCompat.getFont(getContext(), resourceId, mTypedValue, textStyle, replyCallback);
             if (typeface != null) {
                 asyncFontPending.set(true);
                 setTypeface(typeface, textStyle);
@@ -667,6 +690,7 @@ public class EditText extends android.widget.EditText
         this.matchingView = viewId;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
@@ -774,6 +798,7 @@ public class EditText extends android.widget.EditText
             rippleDrawable.setBounds(0, 0, getWidth(), getHeight());
     }
 
+    @SuppressLint("NewApi")
     private void updateCorners() {
         if (!corners.isZero() && Carbon.IS_LOLLIPOP_OR_HIGHER && renderingMode == RenderingMode.Auto) {
             setClipToOutline(true);
@@ -966,27 +991,28 @@ public class EditText extends android.widget.EditText
     }
 
     @Override
-    public void setBackgroundDrawable(Drawable background) {
-        if (background instanceof RippleDrawable) {
+    public void setBackgroundDrawable(Drawable background)
+    {
+        if (background instanceof RippleDrawable)
+        {
             setRippleDrawable((RippleDrawable) background);
             return;
         }
 
-        if (rippleDrawable != null && rippleDrawable.getStyle() == RippleDrawable.Style.Background) {
+        if (rippleDrawable != null && rippleDrawable.getStyle() == RippleDrawable.Style.Background)
+        {
             rippleDrawable.setCallback(null);
             rippleDrawable = null;
         }
         super.setBackgroundDrawable(background);
         updateBackgroundTint();
     }
-
     @Override
-    public void setCompoundDrawables(@Nullable Drawable left, @Nullable Drawable top, @Nullable Drawable right, @Nullable Drawable bottom) {
+    public void setCompoundDrawables(@Nullable Drawable left, @Nullable Drawable top, @Nullable Drawable right, @Nullable Drawable bottom)
+    {
         super.setCompoundDrawables(left, top, right, bottom);
         updateTint();
     }
-
-
     // -------------------------------
     // elevation
     // -------------------------------
@@ -1003,12 +1029,15 @@ public class EditText extends android.widget.EditText
     }
 
     @Override
-    public void setElevation(float elevation) {
-        if (Carbon.IS_PIE_OR_HIGHER) {
+    public void setElevation(float elevation)
+    {
+        if (Carbon.IS_PIE_OR_HIGHER)
+        {
             super.setElevation(elevation);
             super.setTranslationZ(translationZ);
         } else if (Carbon.IS_LOLLIPOP_OR_HIGHER) {
-            if ((ambientShadowColor == null || spotShadowColor == null) && renderingMode == RenderingMode.Auto) {
+            if ((ambientShadowColor == null || spotShadowColor == null) && renderingMode == RenderingMode.Auto)
+            {
                 super.setElevation(elevation);
                 super.setTranslationZ(translationZ);
             } else {
@@ -1020,13 +1049,13 @@ public class EditText extends android.widget.EditText
         }
         this.elevation = elevation;
     }
-
     @Override
     public float getTranslationZ() {
         return translationZ;
     }
 
-    public void setTranslationZ(float translationZ) {
+    public void setTranslationZ(float translationZ)
+    {
         if (translationZ == this.translationZ)
             return;
         if (Carbon.IS_PIE_OR_HIGHER) {
@@ -1385,9 +1414,14 @@ public class EditText extends android.widget.EditText
         updateTint();
         ViewCompat.postInvalidateOnAnimation(this);
     };
-    ValueAnimator.AnimatorUpdateListener backgroundTintAnimatorListener = animation -> {
-        updateBackgroundTint();
-        ViewCompat.postInvalidateOnAnimation(this);
+    ValueAnimator.AnimatorUpdateListener backgroundTintAnimatorListener = new ValueAnimator.AnimatorUpdateListener() {
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation)
+        {
+            // law al2nimiation ACtive Bs
+            EditText.this.updateBackgroundTint();
+            ViewCompat.postInvalidateOnAnimation(EditText.this);
+        }
     };
     ValueAnimator.AnimatorUpdateListener textColorAnimatorListener = animation -> setHintTextColor(getHintTextColors());
 
@@ -1459,7 +1493,9 @@ public class EditText extends android.widget.EditText
     }
 
     private void updateBackgroundTint() {
+        Log.v("MRQenawi", "updateBackgroundTint");
         Drawable background = getBackground();
+
         if (background instanceof RippleDrawable)
             background = ((RippleDrawable) background).getBackground();
         if (background == null)
@@ -1469,7 +1505,11 @@ public class EditText extends android.widget.EditText
         Carbon.setTintMode(background, backgroundTintMode);
 
         if (background.isStateful())
+        {
+            Log.v("MRQenawi", "Its StateFull");
             background.setState(getDrawableState());
+        }
+
     }
 
     @Override

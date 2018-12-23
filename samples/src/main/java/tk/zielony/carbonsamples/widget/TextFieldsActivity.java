@@ -12,9 +12,7 @@ public class TextFieldsActivity extends SamplesActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_textfields);
-
         Samples.initToolbar(this, getString(R.string.textFieldsActivity_title));
-
         EditText editText = findViewById(R.id.editText);
         editText.focusChanges().subscribe((hasFocus) -> editText.setText(""));
     }

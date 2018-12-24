@@ -1501,7 +1501,7 @@ public class EditText extends android.widget.EditText
         if (background == null)
             return;
 
-        Carbon.setTintList(background, backgroundTint);
+    //    Carbon.setTintList(background, backgroundTint);
         Carbon.setTintMode(background, backgroundTintMode);
 
         if (background.isStateful())
